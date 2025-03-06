@@ -86,7 +86,11 @@ function addPost() {
         <div class="post-brief-view">
             <h3 onclick="viewPost('${postTitle}', '${postContent}', '${postImage ? postImage.name : ''}')">${postTitle}</h3>
             <div class="post-brief-view-middle">
-                <p>좋아요 0 댓글 0 조회수 0</p>
+                <div class="post-stats-left">
+                    <p>좋아요 0</p>
+                    <p>댓글 0</p>
+                    <p>조회수 0</p>
+                </div>
                 <p>2025-02-22 00:00:00</p>
             </div>
             <p>더미 작성자 1</p>
@@ -117,7 +121,7 @@ const posts = [
         likeCount: 98,
         commentCount: 8,
         viewCount: 200,
-        content: "게시글 내용 2",
+        content: "게시글 제목 2의 내용입니다요. 메롱 미니언 아주 귀엽지요? 글씨가 어디까지 끊기나, 글씨 크기는 적당한가 시험 중이니 양해해주세요. 미니언은 참 기여워. 좋아요 댓글 부탁드려요~~",
         image: "./image/merong_minion.jpeg"  // 이미지 경로
     }
 ];
@@ -130,9 +134,13 @@ function loadPosts() {
 
         postElement.innerHTML = `
             <div class="post-brief-view">
-                <h3 onclick="viewPost(${post.postId})">${post.title}</h3>
+                <h1 onclick="viewPost(${post.postId})">${post.title}</h1>
                 <div class="post-brief-view-middle">
-                    <p>좋아요 ${post.likeCount} 댓글 ${post.commentCount} 조회수 ${post.viewCount}</p>
+                    <div class="post-stats-left">
+                        <p>좋아요 ${post.likeCount}</p>
+                        <p>댓글 ${post.commentCount}</p>
+                        <p>조회수 ${post.viewCount}</p>
+                    </div>
                     <p>${post.createdAt}</p>
                 </div>
                 <p>${post.author}</p>
@@ -184,7 +192,8 @@ function displayPostDetails(post) {
         commentElement.innerHTML = `
             <div class="comment-header">
                 <div class="comment-meta">
-                    <p><strong>${comment.author}</strong> ${comment.createdAt}</p>
+                    <p class="comment-author">${comment.author}</p>
+                    <p class="comment-date">${comment.createdAt}</p>
                 </div>
                 <div class="comment-actions">
                     <button onclick="editComment(this)" class="post-detail-button">수정</button>
@@ -219,7 +228,8 @@ function addComment() {
     commentElement.innerHTML = `
         <div class="comment-header">
             <div class="comment-meta">
-                <p><strong>${newComment.author}</strong> ${newComment.created_at}</p>
+                <p class="comment-author">${newComment.author}</p>
+                <p class="comment-date">${newComment.created_at}</p>
             </div>
             <div class="comment-actions">
                 <button onclick="editComment(this)" class="post-detail-button">수정</button>

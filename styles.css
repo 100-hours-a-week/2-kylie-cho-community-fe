@@ -1,8 +1,22 @@
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
 * { 
     box-sizing: border-box;
     margin: 0; 
     padding: 0; 
-    font-family: Arial, sans-serif; 
+    font-family: 'Pretendard', Arial, sans-serif; 
 }
 
 /* 바디 전체 */
@@ -52,10 +66,12 @@ header {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-weight: 400;
+    font-weight: 700;
     font-size: 28px;
     line-height: 52px;
     text-align: center;
+    font-family: 'Pretendard', Arial, sans-serif;
+    letter-spacing: -0.5px;
     /* border: 1px solid red; */
 }
 
@@ -63,6 +79,10 @@ header {
 .container, .post-container { 
     width: 350px; 
     padding: 0;
+}
+h1 { 
+    font-weight: 700;
+    text-align: center; 
 }
 h2 { 
     font-weight: 500;
@@ -141,13 +161,21 @@ h2 {
     font-size: 13px;
     color: red;
 }
+
 .tab input {
     width: 100%;
-    box-sizing: border-box; /* padding과 border가 너비에 포함되도록 설정 */
+    box-sizing: border-box;
+}
+.tab textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+.tab .input-img {
+    border: none;
+    padding-left: 0px;
 }
 input { 
     box-sizing: border-box;
-    /* width: 100%; */
     width: calc(100% - 20px);
     display: block;
     padding: 0; 
@@ -155,7 +183,6 @@ input {
     border: 1px solid #ccc; 
     border-radius: 5px; 
     height: 40px;
-    text-indent: 10px;
 }
 
 button { 
@@ -184,13 +211,23 @@ button:hover {
 }
 
 .post-container { 
-    width: 500px; 
-    padding: 20px; 
+    width: 100%;
+    padding: 0px;
 }
 .post { 
+    margin: 10px 0px;
     padding: 15px; 
-    border-bottom: 1px solid #ccc; 
+    background: #fafafa; 
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+.post:hover { 
+    background: #f0f0f0; 
+}
+
 .post-button { 
     width: calc(100% - 380px); 
     display: block;
@@ -230,24 +267,61 @@ textarea {
 }
 .post { 
     margin: 10px 0px;
-    padding: 15px; 
+    padding: 10px; 
     background: #fafafa; 
-    border: 1px solid #ddd; 
+    border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 .post:hover { 
     background: #f0f0f0; 
 }
+
 .post-brief-view {
-    padding: 5px;
+    padding: 0px 15px;
 }
+.post-brief-view h1 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 15px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.post-brief-view p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
+    margin-top: 10px;
+    padding: 8px 0px;
+}
+
 .post-brief-view-middle {
     display: flex;
     justify-content: space-between;
-    margin: 10px 0px;
+    align-items: center;
+    margin: 5px 0px;
+    padding: 5px 0px;
     border-bottom: 1px solid #ddd;
+}
+
+.post-stats-left {
+    display: flex;
+    gap: 10px;
+}
+
+.post-stats-left p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+}
+
+.post-brief-view-middle p:last-child {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
 }
 
 /* 게시글 상세 조회 스타일 */
@@ -255,9 +329,6 @@ textarea {
     width: 500px;
     padding: 20px;
     text-align: left;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin: 20px auto;
     min-height: 200px;
 }
@@ -267,7 +338,7 @@ textarea {
 }
 
 .post-title { 
-    font-size: 24px; 
+    font-size: 20px; 
     font-weight: bold; 
     margin-bottom: 10px;
     text-align: left;
@@ -278,53 +349,87 @@ textarea {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    /* padding: 5px 0; */
+    padding-top: 5px;
+    /* border-bottom: 1px solid #eee; */
 }
 
 .post-meta {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 20px;
 }
 
-.post-meta p {
+.post-meta p:first-child {
+    font-weight: bold;
+    font-size: 15px;
+    margin: 0;
+}
+
+.post-meta p:last-child {
     color: #666;
     font-size: 14px;
+    margin: 0;
 }
 
 .post-actions {
     display: flex;
+    align-items: center;
     gap: 10px;
+    height: 25px;
+    margin: 0;
+    padding: 0;
 }
 
 .post-detail-button {
-    padding: 5px 15px;
+    padding: 0 10px;
     font-size: 14px;
-    background: #f0f0f0;
+    background: none;
     color: #333;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border: 1px solid #ACA0EB;
+    border-radius: 6px;
     cursor: pointer;
+    width: 50px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
 }
 
 .post-detail-button:hover {
-    background: #e0e0e0;
+    background: #ACA0EB;
+    color: white;
+}
+
+#post-image {
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 #post-image img {
     width: 100%;
     height: auto;
-    margin-bottom: 20px;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
 }
 
 #post-content { 
-    font-size: 16px; 
+    font-size: 14px; 
     line-height: 1.6;
     color: #333;
     margin-bottom: 20px;
 }
 
+.post-image-content-container {
+    padding: 0px 15px;
+}
+
 .post-stats {
     display: flex;
-    gap: 20px;
+    justify-content: center;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
@@ -333,20 +438,27 @@ textarea {
     flex-direction: column;
     align-items: center;
     padding: 10px 20px;
-    background: #f8f8f8;
+    background: #ddd;
     border-radius: 8px;
+    width: 100px;
+    min-width: 100px;
 }
 
 .stat-label {
     font-size: 14px;
-    color: #666;
+    font-family: 'Pretendard', Arial, sans-serif;
+    font-weight: 700;
     margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
 }
 
 .stat-value {
     font-size: 18px;
     font-weight: bold;
     color: #333;
+    text-align: center;
+    width: 100%;
 }
 
 .divider {
@@ -368,44 +480,47 @@ textarea {
 
 .comment-input-area {
     width: 100%;
+    background: white;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
+    border-radius: 8px;
     margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .comment-input-area textarea {
     width: 100%;
-    height: 60px;
-    padding: 10px;
+    height: 80px;
+    padding: 15px;
     border: none;
-    border-radius: 4px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 8px 8px 0 0;
     resize: none;
-    margin-bottom: 10px;
+    font-size: 14px;
+    outline: none;
 }
 
-.comment-divider {
-    height: 1px;
-    background: #ddd;
-    margin: 10px 0;
+.comment-input-area textarea:focus {
+    outline: none;
+}
+
+.comment-button-area {
+    padding: 0 3px 4px 0;
+    display: flex;
+    justify-content: flex-end;
+    /* border: 1px solid red; */
 }
 
 .comment-submit-button {
-    width: 100px;
-    height: 30px;
+    width: 110px;
+    height: 32px;
     padding: 0;
     margin: 0;
     background: #ACA0EB;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
     font-size: 14px;
-    float: right;
-}
-
-.comment-submit-button:hover {
-    background: #7F6AEE;
 }
 
 .comments-list {
@@ -414,8 +529,7 @@ textarea {
 }
 
 .comment {
-    padding: 15px;
-    border-bottom: 1px solid #eee;
+    padding: 10px 15px;
     width: 100%;
 }
 
@@ -429,12 +543,20 @@ textarea {
 .comment-meta {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
-.comment-meta p {
-    color: #666;
+.comment-author {
     font-size: 14px;
+    font-weight: 700;
+    color: #333;
     margin: 0;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #666;
+    margin-left: 10px;
 }
 
 .comment-actions {
@@ -443,9 +565,9 @@ textarea {
 }
 
 .comment-content {
-    color: #333;
+    color: #444;
     margin: 5px 0;
-    line-height: 1.5;
+    font-size: 14px;
 }
 
 .comment-edit-textarea {
@@ -456,6 +578,10 @@ textarea {
     border-radius: 4px;
     resize: none;
     margin-bottom: 10px;
+}
+
+.comment-edit-textarea:focus {
+    outline: none;
 }
 
 .comment-edit-actions {
