@@ -42,7 +42,31 @@ function logout() {
     showPage('login-page');
 }
 
+let userProfileImage = '';
+
+// 프로필 이미지 미리보기 함수
+function previewProfileImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        // 이미지 미리보기
+        userProfileImage = reader.result;
+        // 프로필 아이콘에 미리보기 이미지 설정
+        document.querySelector('.profile-icon').style.backgroundImage = `url(${userProfileImage})`;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+
 function register() {
+    // 사용자가 선택한 프로필 이미지 처리
+    const profileImageInput = document.getElementById('profile-image-upload');
+    
+    // 프로필 이미지가 선택되지 않았다면 기본 이미지 사용
+    if (!userProfileImage && !profileImageInput.files.length) {
+        userProfileImage = './image/merong_minion.jpeg'; // 프로젝트 폴더 내의 기본 이미지
+        document.querySelector('.profile-icon').style.backgroundImage = `url(${userProfileImage})`; // 프로필 아이콘에 기본 이미지 설정
+    }
+
+    // 회원가입 완료 후 로그인 페이지로 이동
     alert('회원가입 완료!');
     showPage('login-page');
 }
@@ -73,19 +97,180 @@ function addPost() {
     showPage('post-list-page');
 }
 
-function viewPost(title, content, image) {
-    currentPost = {title, content, image};
-
-    document.getElementById('post-title').innerText = title;
-    document.getElementById('post-author').innerText = '더미 작성자 1';
-    document.getElementById('post-date').innerText = new Date().toLocaleDateString();
-    
-    if (content.image) {
-        document.getElementById('post-image').innerHTML = `<img src="${content.image}" alt="이미지">`;
+// 게시글 목록에 더미 데이터 추가
+const posts = [
+    {
+        postId: 1,
+        title: "게시글 제목 1",
+        author: "작성자 1",
+        createdAt: "2021-01-01 00:00:00",
+        likeCount: 123,
+        commentCount: 12,
+        viewCount: 123,
+        content: "게시글 내용 1"
+    },
+    {
+        postId: 2,
+        title: "게시글 제목 2",
+        author: "작성자 2",
+        createdAt: "2021-02-01 00:00:00",
+        likeCount: 98,
+        commentCount: 8,
+        viewCount: 200,
+        content: "게시글 내용 2",
+        image: "./image/merong_minion.jpeg"  // 이미지 경로
     }
-    document.getElementById('post-content').innerText = content;
+];
+
+function loadPosts() {
+    const postContainer = document.getElementById("posts");
+    posts.forEach(post => {
+        let postElement = document.createElement("div");
+        postElement.classList.add("post");
+
+        postElement.innerHTML = `
+            <div class="post-brief-view">
+                <h3 onclick="viewPost(${post.postId})">${post.title}</h3>
+                <div class="post-brief-view-middle">
+                    <p>좋아요 ${post.likeCount} 댓글 ${post.commentCount} 조회수 ${post.viewCount}</p>
+                    <p>${post.createdAt}</p>
+                </div>
+                <p>${post.author}</p>
+            </div>
+        `;
+        postContainer.appendChild(postElement);
+    });
+}
+
+function viewPost(postId) {
+    const post = posts.find(p => p.postId === postId);
+    if (post) {
+        showPage('post-detail-page');
+        displayPostDetails(post);
+    } else {
+        alert('게시글을 찾을 수 없습니다.');
+    }
+}
+
+function displayPostDetails(post) {
+    document.getElementById('post-title').innerText = post.title;
+    document.getElementById('post-author').innerText = post.author;
+    document.getElementById('post-date').innerText = post.createdAt;
+
+    if (post.image) {
+        document.getElementById('post-image').innerHTML = `<img src="${post.image}" alt="게시글 이미지">`;
+    }
+    document.getElementById('post-content').innerText = post.content;
+
+    // 통계 정보 표시
+    document.getElementById('post-like-count').innerText = post.likeCount;
+    document.getElementById('post-view-count').innerText = post.viewCount;
+    document.getElementById('post-comment-count').innerText = post.commentCount;
+
+    // 댓글 섹션 초기화
+    const commentSection = document.getElementById('post-comments-section');
+    const commentsList = document.getElementById('comments');
+    commentsList.innerHTML = '';
     
-    showPage('post-detail-page');
+    // 댓글 더미 데이터 추가
+    const comments = [
+        { author: "댓글 작성자 1", createdAt: "2021-01-01 00:00:00", content: "댓글 내용 1" },
+        { author: "댓글 작성자 2", createdAt: "2021-01-02 00:00:00", content: "댓글 내용 2" }
+    ];
+
+    comments.forEach(comment => {
+        let commentElement = document.createElement("div");
+        commentElement.classList.add("comment");
+        commentElement.innerHTML = `
+            <div class="comment-header">
+                <div class="comment-meta">
+                    <p><strong>${comment.author}</strong> ${comment.createdAt}</p>
+                </div>
+                <div class="comment-actions">
+                    <button onclick="editComment(this)" class="post-detail-button">수정</button>
+                    <button onclick="deleteComment(this)" class="post-detail-button">삭제</button>
+                </div>
+            </div>
+            <p class="comment-content">${comment.content}</p>
+        `;
+        commentsList.appendChild(commentElement);
+    });
+}
+
+function addComment() {
+    const commentContent = document.querySelector('#new-comment-content').value;
+    if (commentContent.trim() === "") {
+        alert("댓글 내용을 입력해주세요.");
+        return;
+    }
+
+    // 댓글을 추가
+    let newComment = {
+        author: "댓글 작성자1",
+        created_at: new Date().toLocaleString(),
+        content: commentContent
+    };
+
+    // 댓글을 게시글에 추가
+    let commentsList = document.getElementById('comments');
+    let commentElement = document.createElement('div');
+    commentElement.classList.add('comment');
+    
+    commentElement.innerHTML = `
+        <div class="comment-header">
+            <div class="comment-meta">
+                <p><strong>${newComment.author}</strong> ${newComment.created_at}</p>
+            </div>
+            <div class="comment-actions">
+                <button onclick="editComment(this)" class="post-detail-button">수정</button>
+                <button onclick="deleteComment(this)" class="post-detail-button">삭제</button>
+            </div>
+        </div>
+        <p class="comment-content">${newComment.content}</p>
+    `;
+    commentsList.appendChild(commentElement);
+
+    // 댓글 내용 초기화
+    document.querySelector('#new-comment-content').value = '';
+}
+
+function editComment(button) {
+    const commentElement = button.closest('.comment');
+    const contentElement = commentElement.querySelector('.comment-content');
+    const currentContent = contentElement.textContent;
+    
+    // 수정 모드로 전환
+    contentElement.innerHTML = `
+        <textarea class="comment-edit-textarea">${currentContent}</textarea>
+        <div class="comment-edit-actions">
+            <button onclick="saveComment(this)" class="post-detail-button">저장</button>
+            <button onclick="cancelEdit(this)" class="post-detail-button">취소</button>
+        </div>
+    `;
+}
+
+function saveComment(button) {
+    const commentElement = button.closest('.comment');
+    const textarea = commentElement.querySelector('.comment-edit-textarea');
+    const newContent = textarea.value;
+    
+    // 수정된 내용 저장
+    commentElement.querySelector('.comment-content').textContent = newContent;
+}
+
+function cancelEdit(button) {
+    const commentElement = button.closest('.comment');
+    const contentElement = commentElement.querySelector('.comment-content');
+    const originalContent = contentElement.querySelector('.comment-edit-textarea').value;
+    
+    // 원래 내용으로 복원
+    contentElement.textContent = originalContent;
+}
+
+function deleteComment(button) {
+    if (confirm('댓글을 삭제하시겠습니까?')) {
+        button.closest('.comment').remove();
+    }
 }
 
 function showDeleteModal() {
@@ -95,6 +280,7 @@ function showDeleteModal() {
 function closeModal() {
     document.getElementById('edit-modal').style.display = 'none';
     document.getElementById('delete-modal').style.display = 'none';
+    document.getElementById('comment-delete-modal').style.display = 'none';
 }
 
 function deletePost() {
@@ -129,9 +315,12 @@ function toggleProfileMenu() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', loadPosts);
+
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.profile-icon').addEventListener('click', toggleProfileMenu);
     document.getElementById('logout').addEventListener('click', logout);
     document.getElementById('profile-edit').addEventListener('click', function() { showPage('profile-page'); });
     document.getElementById('password-edit').addEventListener('click', function() { showPage('password-page'); });
+
 });

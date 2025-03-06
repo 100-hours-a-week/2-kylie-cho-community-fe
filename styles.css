@@ -1,5 +1,5 @@
 * { 
-    /* box-sizing: border-box;  */
+    box-sizing: border-box;
     margin: 0; 
     padding: 0; 
     font-family: Arial, sans-serif; 
@@ -7,28 +7,32 @@
 
 /* 바디 전체 */
 body { 
-    position: fixed;
+    position: relative;
     width: 100%;
     padding: 10px;
     display: flex; 
+    flex-direction: column;
     align-items: center; 
-    justify-content: center; 
-    height: 105vh; 
+    min-height: 100vh; 
     background: #f5f5f5; 
+    overflow-x: hidden;
 }
 
 /* 상단 고정바 */
 header { 
-    position: fixed; 
-    top: 0; 
+    position: relative;
     width: 100%; 
     padding: 10px 0px; 
     color: #000000; 
     border-bottom: 1px solid #000000;
+    background: #f5f5f5;
+    z-index: 100;
+    margin-bottom: 20px;
 }
 .back-header {
-    width: 500px;
-    height: 60px;
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
     display: flex;
     position: relative;
     padding: 0px;
@@ -58,22 +62,26 @@ header {
 /* 로그인 페이지 관련 */
 .container, .post-container { 
     width: 350px; 
-    padding: 20px;
-    /* border: 1px solid blue; */
+    padding: 0;
 }
 h2 { 
     font-weight: 500;
     text-align: center; 
-    margin-bottom: 20px; 
+    margin: 20px 0px;
 }
 
 .tab {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* border: 1px solid red; */
 }
 .tab-title {
     font-weight: 600;
     font-size: 14px;
     color: #000000;
+    cursor: pointer;
 }
 
 .profile {
@@ -129,24 +137,33 @@ h2 {
 
 
 .helper-txt {
+    margin-top: 5px;
     font-size: 13px;
     color: red;
 }
+.tab input {
+    width: 100%;
+    box-sizing: border-box; /* padding과 border가 너비에 포함되도록 설정 */
+}
 input { 
-    width: calc(100% - 20px); 
+    box-sizing: border-box;
+    /* width: 100%; */
+    width: calc(100% - 20px);
     display: block;
-    padding: 10px; 
-    margin: 4px 0; 
+    padding: 0; 
+    margin: 0; 
     border: 1px solid #ccc; 
     border-radius: 5px; 
+    height: 40px;
+    text-indent: 10px;
 }
 
 button { 
-    width: calc(100% - 20px); 
+    width: 100%; 
     display: block;
     padding: 10px; 
     margin-top: 10px; 
-    border: none; 
+    border: none;
     background: #ACA0EB; 
     color: white; 
     border-radius: 5px; 
@@ -162,6 +179,8 @@ button:hover {
     cursor: pointer; 
     color: #000000;
     font-size: 13px; 
+    width: 100%;
+    padding: 0 10px;
 }
 
 .post-container { 
@@ -204,6 +223,8 @@ textarea {
 
 /* 게시글 목록 스타일 */
 #posts { 
+    width: 500px;
+    margin: 20px auto;
     display: flex; 
     flex-direction: column; 
 }
@@ -231,42 +252,220 @@ textarea {
 
 /* 게시글 상세 조회 스타일 */
 #post-detail-page { 
+    width: 500px;
     padding: 20px;
     text-align: left;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    min-height: 200px;
 }
+
+.post-header {
+    margin-bottom: 20px;
+}
+
+.post-title { 
+    font-size: 24px; 
+    font-weight: bold; 
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.post-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.post-meta {
+    display: flex;
+    gap: 10px;
+}
+
+.post-meta p {
+    color: #666;
+    font-size: 14px;
+}
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.post-detail-button {
+    padding: 5px 15px;
+    font-size: 14px;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.post-detail-button:hover {
+    background: #e0e0e0;
+}
+
 #post-image img {
     width: 100%;
     height: auto;
+    margin-bottom: 20px;
 }
-#post-title { 
-    font-size: 20px; 
-    font-weight: bold; 
-    margin-bottom: 10px;
-}
+
 #post-content { 
     font-size: 16px; 
-    line-height: 1.5;
-    color: #555;
-    border-top: 1px solid #ddd;
-    padding-top: 10px;
-    margin-top: 10px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
 }
-.button-wrapper {
+
+.post-stats {
     display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+    background: #f8f8f8;
+    border-radius: 8px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.divider {
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+.comments-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.comments-section h4 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.comment-input-area {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.comment-input-area textarea {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    resize: none;
+    margin-bottom: 10px;
+}
+
+.comment-divider {
+    height: 1px;
+    background: #ddd;
+    margin: 10px 0;
+}
+
+.comment-submit-button {
+    width: 100px;
+    height: 30px;
+    padding: 0;
+    margin: 0;
+    background: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    float: right;
+}
+
+.comment-submit-button:hover {
+    background: #7F6AEE;
+}
+
+.comments-list {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.comment {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    width: 100%;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-meta {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-meta p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-content {
+    color: #333;
+    margin: 5px 0;
+    line-height: 1.5;
+}
+
+.comment-edit-textarea {
+    width: 100%;
+    height: 60px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: none;
+    margin-bottom: 10px;
+}
+
+.comment-edit-actions {
+    display: flex;
+    gap: 10px;
     justify-content: flex-end;
 }
-.post-detail-button {
-    width: calc(100% - 300px); 
-    border: 1px solid #ACA0EB;
-    color: black;
-    background: none;
-    padding: 5px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 5px;
-}
-.post-detail-button:hover {
-    background: #ddd;
+
+.comment-delete-button:hover {
+    background: #e0e0e0;
 }
 
 /* 모달 스타일 */
@@ -310,5 +509,7 @@ textarea {
 }
 /* 게시글 작성 & 수정 페이지 */
 #post-add-page, #post-edit-page { 
+    width: 500px;
+    margin: 20px auto;
     text-align: left;
 }

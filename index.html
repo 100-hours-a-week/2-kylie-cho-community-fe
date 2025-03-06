@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>아무 말 대잔치</title>
+    <title>전국 맛집 추천 커뮤니티: 맛추픽추</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,8 +11,8 @@
     <header>
         <div class="back-header">
             <div class="back" onclick="goBack()" style="display: none;">&lt;</div>
-            <h1 class="title">아무 말 대잔치</h1>
-            <div class="profile-icon" onclick="toggleProfileMenu()">👤</div>
+            <h1 class="title">맛추픽추</h1>
+            <div class="profile-icon" onclick="toggleProfileMenu()"></div>
             <div id="profile-menu" class="profile-menu">
                 <div id="profile-edit">회원정보 수정</div>
                 <div id="password-edit">비밀번호 수정</div>
@@ -46,7 +46,10 @@
                 <p class="helper-txt">* helper text</p>
                 <div class="profile">
                     <div class="profile-upload">
-                        <div class="profile-placeholder">+</div>
+                        <div id="profile-image-placeholder" class="profile-placeholder" onclick="document.getElementById('profile-image-upload').click()">
+                            <span>+</span>
+                        </div>
+                        <input type="file" id="profile-image-upload" accept="image/*" style="display: none;" onchange="previewProfileImage(event)">
                     </div>
                 </div>
             </div>
@@ -102,20 +105,52 @@
 
         <!-- 게시글 상세 조회 페이지 -->
         <div id="post-detail-page" class="container" style="display: none;">
-            <h2 id="post-title">제목</h2>
-            <p id="post-author">작성자: 작성자 이름</p>
-            <p id="post-date">날짜: 2021-01-01 00:00:00</p>
-
-            <div class="button-wrapper">
-                <button onclick="showPage('post-edit-page')" class="post-detail-button">수정</button>
-                <button onclick="showDeleteModal()" class="post-detail-button">삭제</button>
+            <div class="post-header">
+                <h2 id="post-title" class="post-title">제목</h2>
+                <div class="post-info">
+                    <div class="post-meta">
+                        <p id="post-author">작성자 이름</p>
+                        <p id="post-date">2021-01-01 00:00:00</p>
+                    </div>
+                    <div class="post-actions">
+                        <button onclick="showPage('post-edit-page')" class="post-detail-button">수정</button>
+                        <button onclick="showDeleteModal()" class="post-detail-button">삭제</button>
+                    </div>
+                </div>
             </div>
 
             <div id="post-image"></div>
             <p id="post-content">내용</p>
+
+            <div class="post-stats">
+                <div class="stat-box">
+                    <span class="stat-label">좋아요</span>
+                    <span class="stat-value" id="post-like-count">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">조회수</span>
+                    <span class="stat-value" id="post-view-count">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">댓글</span>
+                    <span class="stat-value" id="post-comment-count">0</span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- 댓글 섹션 -->
+            <div id="post-comments-section" class="comments-section">
+                <div class="comment-input-area">
+                    <textarea id="new-comment-content" placeholder="댓글을 입력하세요"></textarea>
+                    <div class="comment-divider"></div>
+                    <button onclick="addComment()" class="comment-submit-button">댓글 등록</button>
+                </div>
+                <div id="comments" class="comments-list"></div>
+            </div>
         </div>
 
-        <!-- 삭제 확인 모달 -->
+        <!-- 게시글 삭제 확인 모달 -->
         <div id="delete-modal" class="modal" style="display: none;">
             <div class="modal-content">
                 <p class="modal-title">게시글을 삭제하시겠습니까?</p>
@@ -123,6 +158,18 @@
                 <div class="modal-button-wrapper">
                     <button onclick="closeModal()" class="modal-cancel-button">취소</button>
                     <button onclick="deletePost()" class="modal-ok-button">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 삭제 확인 모달 -->
+        <div id="comment-delete-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <p class="modal-title">댓글을 삭제하시겠습니까?</p>
+                <p class="modal-warning">삭제한 댓글은 복구할 수 없습니다.</p>
+                <div class="modal-button-wrapper">
+                    <button onclick="closeModal()" class="modal-cancel-button">취소</button>
+                    <button onclick="deleteComment()" class="modal-ok-button">확인</button>
                 </div>
             </div>
         </div>
