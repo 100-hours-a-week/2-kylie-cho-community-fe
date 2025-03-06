@@ -46,14 +46,24 @@ let userProfileImage = '';
 
 // 프로필 이미지 미리보기 함수
 function previewProfileImage(event) {
+    const file = event.target.files[0];
     const reader = new FileReader();
-    reader.onload = function() {
-        // 이미지 미리보기
-        userProfileImage = reader.result;
-        // 프로필 아이콘에 미리보기 이미지 설정
-        document.querySelector('.profile-icon').style.backgroundImage = `url(${userProfileImage})`;
+    const profileUploadDiv = document.querySelector('.profile-upload');
+
+    reader.onload = function () {
+        // 프로필 이미지 미리보기
+        const uploadedImageUrl = reader.result;
+        // 프로필 업로드 div에 이미지를 배경으로 설정
+        profileUploadDiv.style.backgroundImage = `url(${uploadedImageUrl})`;
+        profileUploadDiv.classList.add('with-uploaded-image');
+        // 기본 이미지 클래스를 제거
+        profileUploadDiv.classList.remove('with-default-image');
+    };
+
+    // 파일 읽기
+    if (file) {
+        reader.readAsDataURL(file);
     }
-    reader.readAsDataURL(event.target.files[0]);
 }
 
 function register() {
@@ -143,7 +153,7 @@ function loadPosts() {
                     </div>
                     <p>${post.createdAt}</p>
                 </div>
-                <p>${post.author}</p>
+                <p class="post-author">${post.author}</p>
             </div>
         `;
         postContainer.appendChild(postElement);
@@ -288,13 +298,13 @@ function showDeleteModal() {
 }
 
 function closeModal() {
-    document.getElementById('edit-modal').style.display = 'none';
     document.getElementById('delete-modal').style.display = 'none';
-    document.getElementById('comment-delete-modal').style.display = 'none';
+    document.getElementById('delete-account-modal').style.display = 'none';
 }
 
 function deletePost() {
     alert('게시글이 삭제되었습니다.');
+    showPage('post-list-page');
     closeModal();
 }
 
@@ -308,29 +318,76 @@ function updatePost() {
 }
 
 function updateProfile() {
+    const email = document.getElementById('profile-email').value;
+    const nickname = document.getElementById('profile-nickname').value;
+    
+    // 여기에 서버로 데이터를 전송하는 코드가 들어갈 수 있습니다.
+    
     alert('회원정보가 수정되었습니다.');
+    showPage('post-list-page');
 }
 
 function updatePassword() {
     alert('비밀번호가 변경되었습니다.');
 }
 
-function toggleProfileMenu() {
-    const menu = document.getElementById('profile-menu');
-    
-    if (menu.style.display === 'block' || menu.style.display === '') {
-        menu.style.display = 'none';
-    } else {
-        menu.style.display = 'block';
-    }
+const profileIcon = document.querySelector('.profile-icon');
+const profileMenu = document.querySelector('.profile-menu');
+
+function handleMenuItemClick(pageId) {
+    showPage(pageId);
+    profileMenu.classList.remove('show'); // 메뉴 닫기
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 프로필 아이콘 클릭 이벤트
+    document.querySelector('.profile-icon').addEventListener('click', (e) => {
+        e.stopPropagation(); // 이벤트 버블링 방지
+        profileMenu.classList.toggle('show');
+    });
+
+    // 메뉴 항목 클릭 이벤트
+    document.getElementById('profile-edit').addEventListener('click', () => handleMenuItemClick('profile-page'));
+    document.getElementById('password-edit').addEventListener('click', () => handleMenuItemClick('password-page'));
+    document.getElementById('logout').addEventListener('click', () => {
+        logout();
+        profileMenu.classList.remove('show');
+    });
+
+    // 메뉴 외부 클릭 시 메뉴 닫기
+    document.addEventListener('click', (e) => {
+        if (!profileIcon.contains(e.target) && !profileMenu.contains(e.target)) {
+            profileMenu.classList.remove('show');
+        }
+    });
+});
 
 document.addEventListener('DOMContentLoaded', loadPosts);
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelector('.profile-icon').addEventListener('click', toggleProfileMenu);
-    document.getElementById('logout').addEventListener('click', logout);
-    document.getElementById('profile-edit').addEventListener('click', function() { showPage('profile-page'); });
-    document.getElementById('password-edit').addEventListener('click', function() { showPage('password-page'); });
+function showDeleteAccountModal() {
+    const modal = document.getElementById('delete-account-modal');
+    modal.style.display = 'flex';
+    document.body.classList.add('modal-open');
+}
 
-});
+function deleteAccount() {
+    alert('회원 탈퇴가 완료되었습니다.');
+    closeModal();
+    logout();
+}
+
+function previewProfileEditImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    const profileEditImage = document.querySelector('.profile-edit-image');
+
+    reader.onload = function() {
+        profileEditImage.style.backgroundImage = `url(${reader.result})`;
+        // 프로필 아이콘에도 같은 이미지 적용
+        document.querySelector('.profile-icon').style.backgroundImage = `url(${reader.result})`;
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}

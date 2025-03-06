@@ -42,7 +42,14 @@ header {
     background: #f5f5f5;
     z-index: 100;
     margin-bottom: 20px;
+    transition: opacity 0.2s ease;
 }
+
+body.modal-open header {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .back-header {
     width: 100%;
     max-width: 500px;
@@ -107,7 +114,7 @@ h2 {
 .profile {
     display: flex;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-top: 20px;
 }
 .profile-upload { 
     display: flex; 
@@ -117,11 +124,37 @@ h2 {
     width: 100px; 
     background: #e0e0e0; 
     border-radius: 50%; 
-    cursor: pointer; 
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-upload.with-default-image {
+    background-image: url('./image/merong_minion.jpeg');
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-upload.with-uploaded-image {
+    background-image: url('');
+}
+
+.profile-upload.with-uploaded-image .profile-placeholder {
+    display: none; /* 이미지가 업로드되면 + 버튼 숨기기 */
+}
+
+.profile-upload img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .profile-placeholder { 
     font-size: 24px; 
-    color: #555; 
+    color: #555;
+    z-index: 1;
 }
 
 .profile-icon {
@@ -135,26 +168,55 @@ h2 {
     background: #e0e0e0; 
     border-radius: 50%; 
     text-align: center;
+    background-image: url('./image/merong_minion.jpeg');
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+    transform: scale(1.05);
 }
 
 /* 메뉴바 */
 .profile-menu {
     position: absolute;
-    top: 60px;
+    top: 50px;
     right: 0px;
-    background: #eee;
-    display: none;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+}
+
+.profile-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
 
 .profile-menu div {
-    padding: 10px;
+    font-size: 14px;
+    padding: 12px 20px;
     cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.profile-menu div:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.profile-menu div:last-child {
+    border-radius: 0 0 8px 8px;
 }
 
 .profile-menu div:hover {
-    background: #ddd;
+    background: #f5f5f5;
 }
-
 
 .helper-txt {
     margin-top: 5px;
@@ -202,7 +264,7 @@ button:hover {
 
 .link { 
     text-align: center; 
-    margin-top: 15px; 
+    margin: 20px 0;
     cursor: pointer; 
     color: #000000;
     font-size: 13px; 
@@ -298,6 +360,21 @@ textarea {
     padding: 8px 0px;
 }
 
+.post-brief-view p.post-author {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-brief-view p.post-author::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: #e0e0e0;
+    border-radius: 50%;
+}
+
 .post-brief-view-middle {
     display: flex;
     justify-content: space-between;
@@ -364,6 +441,18 @@ textarea {
     font-weight: bold;
     font-size: 15px;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-meta p:first-child::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: #e0e0e0;
+    border-radius: 50%;
 }
 
 .post-meta p:last-child {
@@ -551,6 +640,18 @@ textarea {
     font-weight: 700;
     color: #333;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-author::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: #e0e0e0;
+    border-radius: 50%;
 }
 
 .comment-date {
@@ -595,6 +696,10 @@ textarea {
 }
 
 /* 모달 스타일 */
+.modal.hidden {
+    display: none;
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -602,40 +707,192 @@ textarea {
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    display: none;
+    display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.2s ease;
 }
+
 .modal-content {
     background: white;
     padding: 40px 60px;
     border-radius: 8px;
     text-align: center;
+    position: relative;
+    z-index: 1001;
+    transform: scale(1);
+    transition: transform 0.2s ease;
 }
+
 .modal-title {
     font-size: 20px;
     font-weight: 700;
+    margin-bottom: 20px;
 }
+
 .modal-warning {
     font-size: 15px;
     margin-top: 15px;
-    margin-bottom: 5px;
+    margin-bottom: 25px;
+    color: #666;
 }
+
 .modal-button-wrapper {
     display: flex;
     gap: 15px;
+    justify-content: center;
 }
+
 .modal-cancel-button {
-    background: black; 
+    background: #f5f5f5;
+    color: #333;
     width: 110px;
+    margin: 0;
+    border: 1px solid #ddd;
 }
+
+.modal-cancel-button:hover {
+    background: #e8e8e8;
+}
+
 .modal-ok-button {
-    color: black;
+    background: #ACA0EB;
+    color: white;
     width: 110px;
+    margin: 0;
 }
+
+.modal-ok-button:hover {
+    background: #7F6AEE;
+}
+
+.modal.fade-out {
+    opacity: 0;
+}
+
+.modal.fade-out .modal-content {
+    transform: scale(0.9);
+}
+
 /* 게시글 작성 & 수정 페이지 */
 #post-add-page, #post-edit-page { 
     width: 500px;
     margin: 20px auto;
     text-align: left;
+}
+
+.profile-page {
+    width: 350px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.profile-page h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.profile-edit-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-edit-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.profile-edit-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-edit-image input[type="file"] {
+    display: none;
+}
+
+.profile-edit-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.profile-edit-form input {
+    width: 100%;
+    height: 40px;
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.profile-edit-form input:focus {
+    border-color: #ACA0EB;
+    outline: none;
+}
+
+.profile-edit-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.profile-save-button {
+    background: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.profile-save-button:hover {
+    background: #7F6AEE;
+}
+
+.profile-delete-button {
+    background: none;
+    color: #666;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.profile-delete-button:hover {
+    background: #f5f5f5;
+    color: #333;
+}
+
+/* 회원 탈퇴 모달 */
+.delete-account-modal .modal-content {
+    padding: 30px 40px;
+}
+
+.delete-account-modal .modal-title {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.delete-account-modal .modal-warning {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.5;
 }

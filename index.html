@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- 상단 고정바 -->
+    <!-- 상단바 -->
     <header>
         <div class="back-header">
             <div class="back" onclick="goBack()" style="display: none;">&lt;</div>
@@ -43,7 +43,7 @@
             <h2>회원가입</h2>
             <div class="tab">
                 <p class="tab-title">프로필 사진</p>
-                <p class="helper-txt">* helper text</p>
+                <p class="helper-txt">* 필수는 아니지만 자신을 표현해보세요!</p>
                 <div class="profile">
                     <div class="profile-upload">
                         <div id="profile-image-placeholder" class="profile-placeholder" onclick="document.getElementById('profile-image-upload').click()">
@@ -56,7 +56,7 @@
             <div class="tab">
                 <p class="tab-title">이메일*</p>
                 <input type="email" placeholder="이메일을 입력하세요">
-                <p class="helper-txt">* helper text</p>
+                <p class="helper-txt">* 이벤트 참여 시 이메일로 알림을 받을 수 있습니다.</p>
             </div>
             <div class="tab">
                 <p class="tab-title">비밀번호*</p>
@@ -202,10 +202,35 @@
         <!-- 회원정보 수정 페이지 -->
         <div id="profile-page" class="container" style="display: none;">
             <h2>회원정보 수정</h2>
-            <input type="email" id="profile-email" disabled>
-            <input type="text" id="profile-nickname">
-            <button onclick="updateProfile()">수정하기</button>
+            <div class="profile-edit-section">
+                <label class="profile-edit-image" for="profile-image-upload">
+                    <img src="">
+                    <input type="file" id="profile-image-upload" accept="image/*" style="display: none;" onchange="previewProfileEditImage(event)">
+                </label>
+                
+                <div class="profile-edit-form">
+                    <input type="email" id="profile-email" disabled>
+                    <input type="text" id="profile-nickname" placeholder="닉네임" value="닉네임">
+                </div>
+
+                <div class="profile-edit-buttons">
+                    <button class="profile-save-button" onclick="updateProfile()">수정하기</button>
+                    <button class="profile-delete-button" onclick="showDeleteAccountModal()">회원 탈퇴</button>
+                </div>
+            </div>
             <button class="danger" onclick="showPage('password-page')">수정완료</button>
+        </div>
+
+        <!-- 회원 탈퇴 모달 -->
+        <div id="delete-account-modal" class="modal delete-account-modal" style="display: none;">
+            <div class="modal-content">
+                <h3 class="modal-title">회원탈퇴 하시겠습니까?</h3>
+                <p class="modal-warning">작성하신 게시글과 댓글은 모두 삭제됩니다.</p>
+                <div class="modal-button-wrapper">
+                    <button class="modal-cancel-button" onclick="closeModal()">취소</button>
+                    <button class="modal-ok-button" onclick="deleteAccount()">확인</button>
+                </div>
+            </div>
         </div>
 
         <!-- 비밀번호 수정 페이지 -->
