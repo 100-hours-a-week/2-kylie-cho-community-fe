@@ -1,6 +1,7 @@
 // script.js
 
 let currentPage = 'login-page';
+let posts = []; // 전역 변수로 게시글 데이터 저장
 
 function showPage(pageId) {
     document.getElementById(currentPage).style.display = 'none';
@@ -83,90 +84,162 @@ function register() {
 
 let currentPost = {};
 
-function addPost() {
+// loadPosts 함수 수정
+async function loadPosts() {
+    const postContainer = document.getElementById("posts");
+    postContainer.innerHTML = ''; // 기존 게시글 초기화
+    
+    const loadingMessage = document.createElement('p');
+    loadingMessage.textContent = '게시글을 불러오는 중...';
+    loadingMessage.style.textAlign = 'center';
+    postContainer.appendChild(loadingMessage);
+
+    try {
+        if (posts.length === 0) { // 처음 로드할 때만 API에서 데이터 가져오기
+            posts = await fetchPosts();
+        }
+        postContainer.innerHTML = ''; // 로딩 메시지 제거
+        
+        posts.forEach(post => {
+            let postElement = document.createElement("div");
+            postElement.classList.add("post");
+
+            postElement.innerHTML = `
+                <div class="post-brief-view">
+                    <h1 onclick="viewPost(${post.postId})">${post.title}</h1>
+                    <div class="post-brief-view-middle">
+                        <div class="post-stats-left">
+                            <p>좋아요 ${post.likeCount}</p>
+                            <p>댓글 ${post.commentCount}</p>
+                            <p>조회수 ${post.viewCount}</p>
+                        </div>
+                        <p>${post.createdAt}</p>
+                    </div>
+                    <p class="post-author">${post.author}</p>
+                </div>
+            `;
+            postContainer.appendChild(postElement);
+        });
+    } catch (error) {
+        postContainer.innerHTML = '<p style="text-align: center; color: red;">게시글을 불러오는데 실패했습니다.</p>';
+    }
+}
+
+// addPost 함수 수정
+async function addPost() {
     let postTitle = document.querySelector('#post-add-page input').value;
     let postContent = document.querySelector('#post-add-page textarea').value;
     let postImage = document.querySelector('#post-add-page input[type="file"]').files[0];
-    let postContainer = document.getElementById('posts');
     
-    let post = document.createElement('div');
-    post.classList.add('post');
-    
-    post.innerHTML = `
-        <div class="post-brief-view">
-            <h3 onclick="viewPost('${postTitle}', '${postContent}', '${postImage ? postImage.name : ''}')">${postTitle}</h3>
-            <div class="post-brief-view-middle">
-                <div class="post-stats-left">
-                    <p>좋아요 0</p>
-                    <p>댓글 0</p>
-                    <p>조회수 0</p>
-                </div>
-                <p>2025-02-22 00:00:00</p>
-            </div>
-            <p>더미 작성자 1</p>
-        </div>
-    `;
-    postContainer.appendChild(post);
-    
-    showPage('post-list-page');
-}
-
-// 게시글 목록에 더미 데이터 추가
-const posts = [
-    {
-        postId: 1,
-        title: "게시글 제목 1",
-        author: "작성자 1",
-        createdAt: "2021-01-01 00:00:00",
-        likeCount: 123,
-        commentCount: 12,
-        viewCount: 123,
-        content: "게시글 내용 1"
-    },
-    {
-        postId: 2,
-        title: "게시글 제목 2",
-        author: "작성자 2",
-        createdAt: "2021-02-01 00:00:00",
-        likeCount: 98,
-        commentCount: 8,
-        viewCount: 200,
-        content: "게시글 제목 2의 내용입니다요. 메롱 미니언 아주 귀엽지요? 글씨가 어디까지 끊기나, 글씨 크기는 적당한가 시험 중이니 양해해주세요. 미니언은 참 기여워. 좋아요 댓글 부탁드려요~~",
-        image: "./image/merong_minion.jpeg"  // 이미지 경로
+    if (!postTitle || !postContent) {
+        alert('제목과 내용을 모두 입력해주세요.');
+        return;
     }
-];
 
-function loadPosts() {
-    const postContainer = document.getElementById("posts");
-    posts.forEach(post => {
-        let postElement = document.createElement("div");
-        postElement.classList.add("post");
+    // 새 게시글 객체 생성
+    const newPost = {
+        postId: posts.length > 0 ? Math.max(...posts.map(p => p.postId)) + 1 : 1,
+        title: postTitle,
+        content: postContent,
+        author: '작성자 1',
+        createdAt: new Date().toLocaleString(),
+        likeCount: 0,
+        commentCount: 0,
+        viewCount: 0,
+        image: null
+    };
 
-        postElement.innerHTML = `
-            <div class="post-brief-view">
-                <h1 onclick="viewPost(${post.postId})">${post.title}</h1>
-                <div class="post-brief-view-middle">
-                    <div class="post-stats-left">
-                        <p>좋아요 ${post.likeCount}</p>
-                        <p>댓글 ${post.commentCount}</p>
-                        <p>조회수 ${post.viewCount}</p>
-                    </div>
-                    <p>${post.createdAt}</p>
-                </div>
-                <p class="post-author">${post.author}</p>
-            </div>
-        `;
-        postContainer.appendChild(postElement);
-    });
+    // 이미지가 있는 경우 처리
+    if (postImage) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newPost.image = e.target.result;
+        };
+        reader.readAsDataURL(postImage);
+    }
+
+    // 게시글 배열에 추가
+    posts.unshift(newPost);
+    
+    // 게시글 목록 페이지로 이동
+    showPage('post-list-page');
+    loadPosts(); // 게시글 목록 새로고침
 }
 
-function viewPost(postId) {
-    const post = posts.find(p => p.postId === postId);
-    if (post) {
-        showPage('post-detail-page');
-        displayPostDetails(post);
-    } else {
-        alert('게시글을 찾을 수 없습니다.');
+// 게시글 데이터를 불러오는 함수
+async function fetchPosts() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const posts = await response.json();
+        return posts.slice(0, 10).map(post => ({
+            postId: post.id,
+            title: post.title,
+            author: `작성자 ${post.userId}`,
+            createdAt: new Date().toLocaleString(),
+            likeCount: Math.floor(Math.random() * 100),
+            commentCount: Math.floor(Math.random() * 20),
+            viewCount: Math.floor(Math.random() * 200),
+            content: post.body,
+            image: post.id % 2 === 0 ? "./image/merong_minion.jpeg" : null
+        }));
+    } catch (error) {
+        console.error('게시글을 불러오는데 실패했습니다:', error);
+        return [];
+    }
+}
+
+// 댓글 데이터를 불러오는 함수
+async function fetchComments(postId) {
+    try {
+        const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`);
+        const comments = await response.json();
+        return comments.map(comment => ({
+            author: comment.email.split('@')[0],
+            createdAt: new Date().toLocaleString(),
+            content: comment.body
+        }));
+    } catch (error) {
+        console.error('댓글을 불러오는데 실패했습니다:', error);
+        return [];
+    }
+}
+
+// viewPost 함수 수정
+async function viewPost(postId) {
+    try {
+        const post = posts.find(p => p.postId === postId);
+        if (post) {
+            showPage('post-detail-page');
+            displayPostDetails(post);
+            
+            // 댓글 불러오기
+            const comments = await fetchComments(postId);
+            const commentsList = document.getElementById('comments');
+            commentsList.innerHTML = '';
+            
+            comments.forEach(comment => {
+                let commentElement = document.createElement("div");
+                commentElement.classList.add("comment");
+                commentElement.innerHTML = `
+                    <div class="comment-header">
+                        <div class="comment-meta">
+                            <p class="comment-author">${comment.author}</p>
+                            <p class="comment-date">${comment.createdAt}</p>
+                        </div>
+                        <div class="comment-actions">
+                            <button onclick="editComment(this)" class="post-detail-button">수정</button>
+                            <button onclick="deleteComment(this)" class="post-detail-button">삭제</button>
+                        </div>
+                    </div>
+                    <p class="comment-content">${comment.content}</p>
+                `;
+                commentsList.appendChild(commentElement);
+            });
+        } else {
+            alert('게시글을 찾을 수 없습니다.');
+        }
+    } catch (error) {
+        alert('게시글을 불러오는데 실패했습니다.');
     }
 }
 
