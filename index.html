@@ -113,7 +113,7 @@
                         <p id="post-date">2021-01-01 00:00:00</p>
                     </div>
                     <div class="post-actions">
-                        <button onclick="showPage('post-edit-page')" class="post-detail-button">수정</button>
+                        <button onclick="showEditPage()" class="post-detail-button">수정</button>
                         <button onclick="showDeleteModal()" class="post-detail-button">삭제</button>
                     </div>
                 </div>
@@ -200,25 +200,38 @@
         </div>
 
         <!-- 회원정보 수정 페이지 -->
-        <div id="profile-page" class="container" style="display: none;">
+        <div id="profile-page" class="profile-page" style="display: none;">
             <h2>회원정보 수정</h2>
             <div class="profile-edit-section">
-                <label class="profile-edit-image" for="profile-image-upload">
-                    <img src="">
-                    <input type="file" id="profile-image-upload" accept="image/*" style="display: none;" onchange="previewProfileEditImage(event)">
-                </label>
-                
-                <div class="profile-edit-form">
-                    <input type="email" id="profile-email" disabled>
-                    <input type="text" id="profile-nickname" placeholder="닉네임" value="닉네임">
+                <div class="info-group">
+                    <span class="info-label">프로필 사진*</span>
+                    <div class="profile-image-section">
+                        <div class="profile-edit-image">
+                            <button class="profile-image-change" onclick="document.getElementById('profile-image-upload').click()">
+                                변경
+                            </button>
+                            <input type="file" id="profile-image-upload" accept="image/*" onchange="previewProfileEditImage(event)">
+                        </div>
+                    </div>
                 </div>
-
+                
+                <div class="profile-info">
+                    <div class="info-group">
+                        <span class="info-label">이메일</span>
+                        <div id="profile-email-value" class="info-value email"></div>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">닉네임</span>
+                        <div id="profile-nickname-value" class="info-value"></div>
+                    </div>
+                </div>
+                
                 <div class="profile-edit-buttons">
-                    <button class="profile-save-button" onclick="updateProfile()">수정하기</button>
+                    <button class="profile-edit-button" onclick="toggleEditMode()">수정하기</button>
+                    <button class="profile-save-button" onclick="updateProfile()">수정완료</button>
                     <button class="profile-delete-button" onclick="showDeleteAccountModal()">회원 탈퇴</button>
                 </div>
             </div>
-            <button class="danger" onclick="showPage('password-page')">수정완료</button>
         </div>
 
         <!-- 회원 탈퇴 모달 -->

@@ -16,14 +16,14 @@ function goBack() {
         showPage('post-list-page');
     } else if (currentPage === 'post-edit-page') {
         showPage('post-detail-page');
-    } else if (currentPage === 'password-page') {
-        showPage('profile-page');
+    } else if (currentPage === 'profile-page' || currentPage === 'password-page') {
+        showPage('post-list-page');
     }
 }
 
 function updateBackButton() {
     const backButton = document.querySelector('.back');
-    if (['register-page', 'post-add-page', 'post-detail-page', 'post-edit-page', 'password-page'].includes(currentPage)) {
+    if (['register-page', 'post-add-page', 'post-detail-page', 'post-edit-page', 'profile-page', 'password-page'].includes(currentPage)) {
         backButton.style.display = 'block';
     } else {
         backButton.style.display = 'none';
@@ -311,38 +311,113 @@ function deletePost() {
 function updatePost() {
     let newTitle = document.getElementById('edit-title').value;
     let newContent = document.getElementById('edit-content').value;
+    let newImage = document.querySelector('#post-edit-page input[type="file"]').files[0];
     
+    // 제목과 내용 업데이트
     document.getElementById('post-title').innerText = newTitle;
     document.getElementById('post-content').innerText = newContent;
+    
+    // 새 이미지가 선택된 경우 이미지 업데이트
+    if (newImage) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('post-image').innerHTML = `<img src="${e.target.result}" alt="게시글 이미지">`;
+        };
+        reader.readAsDataURL(newImage);
+    }
+    
     showPage('post-detail-page');
 }
 
-function updateProfile() {
-    const email = document.getElementById('profile-email').value;
-    const nickname = document.getElementById('profile-nickname').value;
-    
-    // 여기에 서버로 데이터를 전송하는 코드가 들어갈 수 있습니다.
-    
-    alert('회원정보가 수정되었습니다.');
-    showPage('post-list-page');
+// 사용자 정보 상태 관리
+let isEditMode = false;
+const userInfo = {
+    email: 'startupcoding@gmail.com',
+    nickname: '스타트업코딩',
+    profileImage: './image/merong_minion.jpeg'
+};
+
+function handleMenuItemClick(pageId) {
+    showPage(pageId);
+    profileMenu.classList.remove('show');
+    if (pageId === 'profile-page') {
+        loadUserInfo(); // 프로필 페이지 진입 시 사용자 정보 로드
+    }
 }
 
-function updatePassword() {
-    alert('비밀번호가 변경되었습니다.');
+function loadUserInfo() {
+    // 수정 모드 초기화
+    isEditMode = false;
+    const profileSection = document.querySelector('.profile-edit-section');
+    profileSection.classList.remove('edit-mode');
+    
+    // 프로필 이미지 설정
+    document.querySelector('.profile-edit-image').style.backgroundImage = `url(${userInfo.profileImage})`;
+    // 이메일 설정
+    document.getElementById('profile-email-value').textContent = userInfo.email;
+    // 닉네임 설정
+    document.getElementById('profile-nickname-value').textContent = userInfo.nickname;
+    // 이미지 변경 버튼 숨김
+    const imageChangeButton = document.querySelector('.profile-image-change');
+    if (imageChangeButton) {
+        imageChangeButton.style.display = 'none';
+    }
+}
+
+function toggleEditMode() {
+    isEditMode = !isEditMode;
+    const profileSection = document.querySelector('.profile-edit-section');
+    const nicknameField = document.getElementById('profile-nickname-value');
+    const imageChangeButton = document.querySelector('.profile-image-change');
+
+    if (isEditMode) {
+        // 수정 모드 활성화
+        profileSection.classList.add('edit-mode');
+        // 닉네임을 input으로 변경
+        const currentNickname = nicknameField.textContent;
+        nicknameField.innerHTML = `<input type="text" value="${currentNickname}" class="info-value editable">`;
+        // 이미지 변경 버튼 표시
+        imageChangeButton.style.display = 'block';
+    }
+}
+
+function updateProfile() {
+    const nicknameInput = document.querySelector('#profile-nickname-value input');
+    if (nicknameInput) {
+        userInfo.nickname = nicknameInput.value;
+    }
+    
+    // 프로필 아이콘 이미지도 업데이트
+    document.querySelector('.profile-icon').style.backgroundImage = 
+        document.querySelector('.profile-edit-image').style.backgroundImage;
+    
+    alert('회원정보가 수정되었습니다.');
+    showPage('post-list-page'); // 게시글 목록 페이지로 이동
+}
+
+function previewProfileEditImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageUrl = e.target.result;
+            document.querySelector('.profile-edit-image').style.backgroundImage = `url(${imageUrl})`;
+            userInfo.profileImage = imageUrl;
+        };
+        reader.readAsDataURL(file);
+    }
 }
 
 const profileIcon = document.querySelector('.profile-icon');
 const profileMenu = document.querySelector('.profile-menu');
 
-function handleMenuItemClick(pageId) {
-    showPage(pageId);
-    profileMenu.classList.remove('show'); // 메뉴 닫기
-}
-
-document.addEventListener('DOMContentLoaded', function () {
+// DOMContentLoaded 이벤트에 프로필 페이지 초기화 로직 추가
+document.addEventListener('DOMContentLoaded', function() {
+    loadPosts();
+    
     // 프로필 아이콘 클릭 이벤트
     document.querySelector('.profile-icon').addEventListener('click', (e) => {
-        e.stopPropagation(); // 이벤트 버블링 방지
+        e.stopPropagation();
         profileMenu.classList.toggle('show');
     });
 
@@ -362,8 +437,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.addEventListener('DOMContentLoaded', loadPosts);
-
 function showDeleteAccountModal() {
     const modal = document.getElementById('delete-account-modal');
     modal.style.display = 'flex';
@@ -376,18 +449,27 @@ function deleteAccount() {
     logout();
 }
 
-function previewProfileEditImage(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    const profileEditImage = document.querySelector('.profile-edit-image');
-
-    reader.onload = function() {
-        profileEditImage.style.backgroundImage = `url(${reader.result})`;
-        // 프로필 아이콘에도 같은 이미지 적용
-        document.querySelector('.profile-icon').style.backgroundImage = `url(${reader.result})`;
-    };
-
-    if (file) {
-        reader.readAsDataURL(file);
+// 게시글 상세 페이지에서 수정 버튼 클릭 시 호출되는 함수
+function showEditPage() {
+    const title = document.getElementById('post-title').innerText;
+    const content = document.getElementById('post-content').innerText;
+    const postImage = document.getElementById('post-image').innerHTML;
+    
+    // 수정 페이지로 이동하면서 기존 내용 설정
+    showPage('post-edit-page');
+    document.getElementById('edit-title').value = title;
+    document.getElementById('edit-content').value = content;
+    
+    // 이미지가 있는 경우 미리보기 표시
+    if (postImage) {
+        const imgSrc = postImage.match(/src="([^"]+)"/)?.[1];
+        if (imgSrc) {
+            const previewContainer = document.createElement('div');
+            previewContainer.id = 'edit-image-preview';
+            previewContainer.innerHTML = `<img src="${imgSrc}" alt="게시글 이미지">`;
+            const imageInput = document.querySelector('#post-edit-page input[type="file"]');
+            imageInput.parentNode.insertBefore(previewContainer, imageInput);
+        }
     }
 }
+

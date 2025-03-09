@@ -42,12 +42,10 @@ header {
     background: #f5f5f5;
     z-index: 100;
     margin-bottom: 20px;
-    transition: opacity 0.2s ease;
 }
 
 body.modal-open header {
-    opacity: 0.5;
-    pointer-events: none;
+    background: rgba(245, 245, 245, 0.5);
 }
 
 .back-header {
@@ -60,15 +58,17 @@ body.modal-open header {
     justify-content: space-between;
     margin: 0 auto;
     align-items: center;
-    /* border: 1px solid red; */
 }
+
 .back { 
     display: none;
     margin-left: 0px;
     cursor: pointer; 
-    font-size: 25px; 
-    /* border: 1px solid blue; */
+    font-size: 25px;
+    color: #000000;
+    z-index: 101;
 }
+
 .title {
     position: absolute;
     left: 50%;
@@ -79,7 +79,8 @@ body.modal-open header {
     text-align: center;
     font-family: 'Pretendard', Arial, sans-serif;
     letter-spacing: -0.5px;
-    /* border: 1px solid red; */
+    color: #000000;
+    z-index: 101;
 }
 
 /* 로그인 페이지 관련 */
@@ -802,46 +803,92 @@ textarea {
     gap: 20px;
 }
 
+.profile-image-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .profile-edit-image {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     background: #e0e0e0;
-    cursor: pointer;
     overflow: hidden;
     position: relative;
-    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
 }
 
-.profile-edit-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.profile-image-change {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 45px;
+    height: 25px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+    border: 1px solid white;
+    border-radius: 12px;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-image-change:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.edit-mode .profile-image-change {
+    display: block;
 }
 
 .profile-edit-image input[type="file"] {
     display: none;
 }
 
-.profile-edit-form {
+.profile-info {
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.profile-edit-form input {
+.info-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
     width: 100%;
-    height: 40px;
-    padding: 0 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
 }
 
-.profile-edit-form input:focus {
-    border-color: #ACA0EB;
-    outline: none;
+.info-label {
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+.info-value {
+    width: 100%;
+    height: 40px;
+    padding: 0 5px;
+    font-size: 14px;
+    color: #555;
+    border: none;
+    border-radius: 5px;
+    background: none;
+    display: flex;
+    align-items: center;
+}
+
+.edit-mode .info-value.editable {
+    color: #000;
+    background: white;
+    border: 1px solid #ccc;
 }
 
 .profile-edit-buttons {
@@ -850,6 +897,18 @@ textarea {
     gap: 10px;
     margin-top: 20px;
     width: 100%;
+}
+
+.profile-edit-button {
+    background: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 0;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    display: block;
 }
 
 .profile-save-button {
@@ -861,18 +920,31 @@ textarea {
     font-size: 14px;
     cursor: pointer;
     width: 100%;
+    display: none;
 }
 
-.profile-save-button:hover {
-    background: #7F6AEE;
+.edit-mode .profile-edit-button {
+    display: none;
+}
+
+.edit-mode .profile-save-button {
+    display: block;
 }
 
 .profile-delete-button {
     background: none;
     color: #666;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 12px 0;
     font-size: 14px;
     cursor: pointer;
     width: 100%;
+}
+
+.profile-edit-button:hover,
+.profile-save-button:hover {
+    background: #7F6AEE;
 }
 
 .profile-delete-button:hover {
@@ -895,4 +967,16 @@ textarea {
     font-size: 14px;
     margin-bottom: 25px;
     line-height: 1.5;
+}
+
+#edit-image-preview {
+    width: 100%;
+    margin: 10px 0;
+}
+
+#edit-image-preview img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
 }
