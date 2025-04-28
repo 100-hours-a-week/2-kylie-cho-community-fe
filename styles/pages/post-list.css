@@ -1,0 +1,79 @@
+/* 게시글 목록 조회 페이지 */
+.post-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.post-button {
+    width: calc(100% - 380px); 
+    margin-bottom: 20px;
+    border-radius: 20px; 
+    justify-self: right;
+}
+
+.post {
+    background: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+}
+
+.post-brief-view {
+    padding: 20px;
+}
+
+.post-brief-view h1 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    word-break: break-all;
+    text-align: left;
+}
+
+.post-brief-view-middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0px;
+    padding-bottom: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+}
+
+.post-stats-left {
+    display: flex;
+    gap: 15px;
+}
+
+.post-brief-divider {
+    height: 1px;
+    background: #ddd;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.post-author {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+    gap: 8px;
+} 
+
+.author-profile-image {
+    width: 24px;
+    height: 24px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    object-fit: cover;
+}

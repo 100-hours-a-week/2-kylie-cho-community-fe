@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>전국 맛집 추천 커뮤니티: 맛추픽추</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components/modal.css">
+    <link rel="stylesheet" href="styles/components/header.css">
+    <link rel="stylesheet" href="styles/components/comment.css">
+    <link rel="stylesheet" href="styles/pages/login.css">
+    <link rel="stylesheet" href="styles/pages/post-list.css">
+    <link rel="stylesheet" href="styles/pages/post-detail.css">
+    <link rel="stylesheet" href="styles/pages/profile-edit.css">
 </head>
 <body>
     <!-- 상단바 -->
@@ -12,8 +19,8 @@
         <div class="back-header">
             <div class="back" onclick="goBack()" style="display: none;">&lt;</div>
             <h1 class="title">😋 맛추픽추 😋</h1>
-            <div class="profile-icon" onclick="toggleProfileMenu()"></div>
-            <div id="profile-menu" class="profile-menu">
+            <div class="profile-icon"></div>
+            <div class="profile-menu">
                 <div id="profile-edit">회원정보 수정</div>
                 <div id="password-edit">비밀번호 수정</div>
                 <div id="logout">로그아웃</div>
@@ -27,11 +34,11 @@
             <h2>로그인</h2>
             <div class="tab">
                 <p class="tab-title">이메일</p>
-                <input type="email" placeholder="이메일을 입력하세요" id="login-email">
+                <input type="email" placeholder="이메일을 입력하세요" id="email">
             </div>
             <div class="tab">
                 <p class="tab-title">비밀번호</p>
-                <input type="password" placeholder="비밀번호를 입력하세요" id="login-password">
+                <input type="password" placeholder="비밀번호를 입력하세요" id="password">
                 <p class="helper-txt">* helper text</p>
             </div>
             <button onclick="login()">로그인</button>
@@ -46,10 +53,10 @@
                 <p class="helper-txt">* 필수는 아니지만 자신을 표현해보세요!</p>
                 <div class="profile">
                     <div class="profile-upload">
-                        <div id="profile-image-placeholder" class="profile-placeholder" onclick="document.getElementById('profile-image-upload').click()">
+                        <div id="profile-image-placeholder" class="profile-placeholder" onclick="document.getElementById('profileImage').click()">
                             <span>+</span>
                         </div>
-                        <input type="file" id="profile-image-upload" accept="image/*" style="display: none;" onchange="previewProfileImage(event)">
+                        <input type="file" id="profileImage" accept="image/*" style="display: none;" onchange="previewProfileImage(event)">
                     </div>
                 </div>
             </div>
@@ -73,48 +80,55 @@
                 <input type="text" placeholder="닉네임을 입력하세요">
                 <p class="helper-txt">* helper text</p>
             </div> 
-            <button onclick="register()">회원가입</button>
+            <button onclick="handleRegister()">회원가입</button>
             <div class="link" onclick="showPage('login-page')">로그인하러 가기</div>
         </div>
 
         <!-- 게시글 목록 조회 페이지 -->
-        <div id="post-list-page" class="post-container" style="display: none;">
+        <div id="post-list-page" class="container-wider" style="display: none;">
             <h2>내가 아는 맛집을 공유해주세요!</h2>
             <button onclick="showPage('post-add-page')" class="post-button">게시글 작성</button>
             <div id="posts"></div>
         </div>
 
         <!-- 게시글 작성 페이지 -->
-        <div id="post-add-page" class="container" style="display: none;">
+        <div id="post-add-page" class="container-wider" style="display: none;">
             <h2>게시글 작성</h2>
-            <div class="tab">
-                <p class="tab-title">제목*</p>
-                <input type="text" placeholder="제목을 입력해주세요. (최대 26글자)">
-            </div>
-            <div class="tab">
-                <p class="tab-title">내용*</p>
-                <textarea placeholder="내용을 입력해주세요."></textarea>
-                <p class="helper-txt">* helper text</p>
-            </div>
-            <div class="tab">
-                <p class="tab-title">이미지</p>
-                <input type="file" class="input-img" accept="image/*">
-            </div>
-            <button onclick="addPost()">완료</button>
+            <form onsubmit="addPost(event)">
+                <div class="tab">
+                    <p class="tab-title">제목</p>
+                    <input type="text" id="post-add-title" placeholder="제목을 입력하세요">
+                </div>
+                <div class="tab">
+                    <p class="tab-title">내용</p>
+                    <textarea id="post-add-content" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <div class="tab">
+                    <p class="tab-title">이미지</p>
+                    <div class="image-upload-container">
+                        <input type="file" id="post-add-image" accept="image/*" onchange="previewAddImage(event)">
+                        <img id="post-add-image-preview" style="display: none; max-width: 80%; margin-top: 10px;">
+                    </div>
+                </div>
+                <button type="submit">작성하기</button>
+            </form>
         </div>
 
         <!-- 게시글 상세 조회 페이지 -->
-        <div id="post-detail-page" class="container" style="display: none;">
+        <div id="post-detail-page" class="container-wider" style="display: none;">
             <div class="post-header">
                 <h2 id="post-title" class="post-title">제목</h2>
                 <div class="post-info">
                     <div class="post-meta">
-                        <p id="post-author">작성자 이름</p>
-                        <p id="post-date">2021-01-01 00:00:00</p>
+                        <div class="post-author">
+                            <img id="post-author-image" class="author-profile-image" src="" alt="작성자 프로필 이미지">
+                            <span id="post-author"></span>
+                        </div>
+                        <p id="post-date"></p>
                     </div>
                     <div class="post-actions">
                         <button onclick="showEditPage()" class="post-detail-button">수정</button>
-                        <button onclick="showDeleteModal()" class="post-detail-button">삭제</button>
+                        <button onclick="showDeletePostModal()" class="post-detail-button">삭제</button>
                     </div>
                 </div>
             </div>
@@ -122,22 +136,22 @@
             <div class="divider"></div>
 
             <div class="post-image-content-container">
-                <div id="post-image"></div>
+                <div id="post-image" style="display: none;"></div>
                 <p id="post-content">내용</p>
             </div>
 
             <div class="post-stats">
                 <div class="stat-box">
                     <span class="stat-label">좋아요</span>
-                    <span class="stat-value" id="post-like-count">0</span>
+                    <span class="stat-value" id="like-count">0</span>
                 </div>
                 <div class="stat-box">
                     <span class="stat-label">조회수</span>
-                    <span class="stat-value" id="post-view-count">0</span>
+                    <span class="stat-value" id="view-count">0</span>
                 </div>
                 <div class="stat-box">
                     <span class="stat-label">댓글</span>
-                    <span class="stat-value" id="post-comment-count">0</span>
+                    <span class="stat-value" id="comment-count">0</span>
                 </div>
             </div>
 
@@ -157,50 +171,56 @@
         </div>
 
         <!-- 게시글 삭제 확인 모달 -->
-        <div id="delete-modal" class="modal" style="display: none;">
+        <div id="delete-post-modal" class="modal" style="display: none;">
             <div class="modal-content">
                 <p class="modal-title">게시글을 삭제하시겠습니까?</p>
                 <p class="modal-warning">삭제한 내용은 복구할 수 없습니다.</p>
                 <div class="modal-button-wrapper">
                     <button onclick="closeModal()" class="modal-cancel-button">취소</button>
-                    <button onclick="deletePost()" class="modal-ok-button">확인</button>
+                    <button onclick="deleteCurrentPost()" class="modal-ok-button">확인</button>
                 </div>
             </div>
         </div>
 
         <!-- 댓글 삭제 확인 모달 -->
-        <div id="comment-delete-modal" class="modal" style="display: none;">
+        <div id="delete-comment-modal" class="modal" style="display: none;">
             <div class="modal-content">
                 <p class="modal-title">댓글을 삭제하시겠습니까?</p>
                 <p class="modal-warning">삭제한 댓글은 복구할 수 없습니다.</p>
                 <div class="modal-button-wrapper">
                     <button onclick="closeModal()" class="modal-cancel-button">취소</button>
-                    <button onclick="deleteComment()" class="modal-ok-button">확인</button>
+                    <button onclick="deleteCurrentComment()" class="modal-ok-button">확인</button>
                 </div>
             </div>
         </div>
 
         <!-- 게시글 수정 페이지 -->
-        <div id="post-edit-page" class="container" style="display: none;">
+        <div id="post-edit-page" class="container-wider" style="display: none;">
             <h2>게시글 수정</h2>
-            <div class="tab">
-                <p class="tab-title">제목*</p>
-                <input type="text" id="edit-title">
-            </div>
-            <div class="tab">
-                <p class="tab-title">내용*</p>
-                <textarea id="edit-content"></textarea>
-                <p class="helper-txt">* helper text</p>
-            </div>
-            <div class="tab">
-                <p class="tab-title">이미지</p>
-                <input type="file" class="input-img" accept="image/*">
-            </div>
-            <button onclick="updatePost()">수정하기</button>
+            <form onsubmit="updateCurrentPost(event)">
+                <div class="tab">
+                    <p class="tab-title">제목</p>
+                    <input type="text" id="post-edit-title" placeholder="제목을 입력하세요">
+                </div>
+                <div class="tab">
+                    <p class="tab-title">내용</p>
+                    <textarea id="post-edit-content" placeholder="내용을 입력하세요"></textarea>
+                </div>
+                <div class="tab">
+                    <p class="tab-title">이미지</p>
+                    <div class="image-upload-container">
+                        <input type="file" id="post-edit-image" accept="image/*" onchange="previewEditImage(event)">
+                        <input type="hidden" id="post-edit-existing-image">
+                        
+                        <img id="post-edit-image-preview" style="display: none; max-width: 80%; margin-top: 10px;">
+                    </div>
+                </div>
+                <button type="submit">수정하기</button>
+            </form>
         </div>
 
         <!-- 회원정보 수정 페이지 -->
-        <div id="profile-page" class="profile-page" style="display: none;">
+        <div id="profile-page" class="container" style="display: none;">
             <h2>회원정보 수정</h2>
             <div class="profile-edit-section">
                 <div class="info-group">
@@ -250,20 +270,62 @@
         <div id="password-page" class="container" style="display: none;">
             <h2>비밀번호 수정</h2>
             <div class="tab">
-                <p class="tab-title">비밀번호</p>
-                <input type="password" placeholder="비밀번호를 입력하세요">
-                <p class="helper-txt">* helper text</p>
+                <p class="tab-title">현재 비밀번호</p>
+                <input type="password" placeholder="현재 비밀번호를 입력하세요" required>
+                <p class="helper-txt">* 현재 사용중인 비밀번호를 입력하세요</p>
             </div>
             <div class="tab">
-                <p class="tab-title">비밀번호 확인</p>
-                <input type="password" placeholder="비밀번호를 한번 더 입력하세요">
-                <p class="helper-txt">* helper text</p>
+                <p class="tab-title">새 비밀번호</p>
+                <input type="password" placeholder="새 비밀번호를 입력하세요" required>
+                <p class="helper-txt">* 영문, 숫자, 특수문자 조합 8~20자</p>
             </div>
-            <button onclick="updatePassword()">수정하기</button>
+            <div class="tab">
+                <p class="tab-title">새 비밀번호 확인</p>
+                <input type="password" placeholder="새 비밀번호를 한번 더 입력하세요" required>
+                <p class="helper-txt">* 비밀번호를 다시 입력하세요</p>
+            </div>
+            <button onclick="updateUserPassword()">수정하기</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module">
+        import { showPage, goBack } from './js/main.js';
+        import { login, logout, handleRegister } from './js/pages/login.js';
+        import { addPost, updateCurrentPost, deleteCurrentPost, showEditPage, previewEditImage, previewAddImage} from './js/components/post.js';
+        import { addComment, editComment, saveComment, cancelEdit, deleteCurrentComment, showDeleteCommentModal } from './js/components/comment.js';
+        import { previewProfileImage, loadUserInfo, toggleEditMode, updateProfile, previewProfileEditImage, showDeleteAccountModal, deleteAccount, updateUserPassword, showDeletePostModal } from './js/components/profile.js';
+        import { showDeleteModal, closeModal } from './js/components/modal.js';
+
+        // 전역 스코프에 함수 노출
+        window.showPage = showPage;
+        window.goBack = goBack;
+        window.login = login;
+        window.logout = logout;
+        window.handleRegister = handleRegister;
+        window.addPost = addPost;
+        window.updateCurrentPost = updateCurrentPost;
+        window.deleteCurrentPost = deleteCurrentPost;
+        window.showEditPage = showEditPage;
+        window.previewEditImage = previewEditImage;
+        window.previewAddImage = previewAddImage;
+        window.addComment = addComment;
+        window.editComment = editComment;
+        window.saveComment = saveComment;
+        window.cancelEdit = cancelEdit;
+        window.deleteCurrentComment = deleteCurrentComment;
+        window.previewProfileImage = previewProfileImage;
+        window.loadUserInfo = loadUserInfo;
+        window.toggleEditMode = toggleEditMode;
+        window.updateProfile = updateProfile;
+        window.previewProfileEditImage = previewProfileEditImage;
+        window.showDeleteAccountModal = showDeleteAccountModal;
+        window.deleteAccount = deleteAccount;
+        window.updateUserPassword = updateUserPassword;
+        window.showDeleteModal = showDeleteModal;
+        window.showDeletePostModal = showDeletePostModal;
+        window.showDeleteCommentModal = showDeleteCommentModal;
+        window.closeModal = closeModal;
+    </script>
 
 </body>
 </html>

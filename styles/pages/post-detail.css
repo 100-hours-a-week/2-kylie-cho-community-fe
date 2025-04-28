@@ -1,0 +1,184 @@
+/* 게시글 상세 페이지 */
+.post-header {
+    margin-bottom: 20px;
+}
+
+.post-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    word-break: break-all;
+    text-align: left;
+}
+
+.post-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+}
+
+.post-author {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+.author-profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.post-meta p {
+    color: #666;
+    font-size: 14px;
+    margin-left: 20px;
+}
+
+.post-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.post-detail-button {
+    width: auto;
+    height: 25px;
+    padding: 0 10px;
+    margin: 0;
+    background: none;
+    color: #333;
+    border: 1px solid #ACA0EB;
+    display: flex;
+    align-items: center;
+}
+
+.post-detail-button:hover {
+    background: #ACA0EB;
+    color: white;
+}
+
+.divider {
+    height: 1px;
+    background: #ddd;
+    margin: 20px 0;
+}
+
+.post-image-content-container {
+    margin: 20px 0;
+}
+
+#post-image {
+    margin-bottom: 20px;
+    display: none;
+}
+
+#post-image img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+#post-content {
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.post-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.stat-box {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.stat-box:hover {
+    transform: scale(1.05);
+}
+
+.stat-box.hearted .stat-value {
+    color: #ff4757;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* 하트 아이콘 스타일 */
+.heart-icon {
+    position: absolute;
+    font-size: 1.2em;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* 하트 애니메이션 */
+@keyframes heartAnimation {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.animate-heart {
+    animation: heartAnimation 1s ease-in-out forwards;
+} 
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #333;
+}
+
+.image-upload-container {
+    position: relative;
+    width: 100%;
+}
+
+.image-upload-container input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}
+
+.image-upload-container input[type="file"]::file-selector-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 1px solid #ACA0EB;
+    background-color: #ACA0EB;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.image-upload-container input[type="file"]::file-selector-button:hover {
+    background-color: #7F6AEE;
+}

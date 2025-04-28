@@ -1,0 +1,110 @@
+/* 상단 고정바 */
+header { 
+    position: relative;
+    width: 100%; 
+    padding: 10px 0; 
+    color: #000000; 
+    border-bottom: 1px solid #000000;
+    background: #f5f5f5;
+    z-index: 100;
+    margin-bottom: 20px;
+}
+
+body.modal-open header {
+    background: rgba(245, 245, 245, 0.5);
+}
+
+.back-header {
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.back { 
+    display: none;
+    margin-left: 0;
+    cursor: pointer; 
+    font-size: 25px;
+    color: #000000;
+    z-index: 101;
+}
+
+.title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 52px;
+    text-align: center;
+    font-family: 'Pretendard', Arial, sans-serif;
+    letter-spacing: -0.5px;
+    color: #000000;
+    z-index: 101;
+}
+
+.profile-icon {
+    position: relative;
+    margin-left: auto;
+    cursor: pointer;
+    font-size: 20px;
+    display: none;
+    height: 40px; 
+    width: 40px; 
+    background: #e0e0e0; 
+    border-radius: 50%; 
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.2s ease;
+}
+
+.profile-icon:hover {
+    transform: scale(1.05);
+}
+
+/* 메뉴바 */
+.profile-menu {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.profile-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.profile-menu div {
+    padding: 12px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+}
+
+.profile-menu div:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.profile-menu div:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+.profile-menu div:hover {
+    background: #f5f5f5;
+} 
